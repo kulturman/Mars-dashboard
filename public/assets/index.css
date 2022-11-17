@@ -1,0 +1,73 @@
+/* -------------------  MOBILE  --------------------- */
+
+.main-title {
+    text-align: center;
+}
+
+.rover {
+    cursor: pointer;
+    width: 100%;
+    background: rgb(87, 79, 79);
+}
+
+.rovers {
+    display: flex;
+    gap: 30px;
+    flex-direction: column;
+}
+
+.rover__name {
+    text-align: center;
+}
+
+.rover__image {
+    width: 100%;
+    height: auto;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial;
+    min-height: 100vh;
+    background: url('./bg.jpeg');
+    color: white;
+    padding: 20px;
+  }
+  
+  header {
+    /* header styles */
+  }
+  
+  main {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  footer {
+    /* footer styles */
+  }
+  
+  /* -------------------  TABLET  --------------------- */
+  @media (min-width: 768px) {
+    .rovers {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .rover__image {
+        height: 300px;
+    }
+  }
+  
+  /* -------------------  DESKTOP  -------------------- */
+  
+  @media (min-width: 1224px) {
+
+  }
+  
+  /* -------------------  LARGE SCREENS  -------------- */
+  
+  @media (min-width: 1824px) {
+    /* use mobile */
+  }
