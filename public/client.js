@@ -2,6 +2,7 @@ let store = {
     selectedRoverData: null,
     selectedRover: null,
     rovers: Immutable.List(['Curiosity', 'Opportunity', 'Spirit']),
+    selectedRoverInfosLayout: 'list'
 }
 
 // add our markup to the page
@@ -25,13 +26,14 @@ const App = (state) => {
             <h1 class="main-title">Mars dashboard</h1>
         </header>
         <main>
+            <a href="#" id="changeLayoutButton">Change rover data informations layout</a>
             <section>
                 <h3>Choose a rover to get its infomations and most recent photos </h3>
                 <div class="rovers">
                     ${RenderRovers(store)}
                 </div>
                 <div class="selected-rover">
-                   ${store.selectedRover ? RenderSelectedRover(store): ''}
+                   ${store.selectedRover ? RenderSelectedRover(store, store.selectedRoverInfosLayout === 'list' ? renderRoverInfosAsList: renderRoverInfosAsTable): ''}
                 </div>
             </section>
         </main>
@@ -46,25 +48,25 @@ window.addEventListener('load', () => {
 
 const attachEvents = () => {
     document.querySelector('.rovers').addEventListener('click', selectRover);
+    document.querySelector('#changeLayoutButton').addEventListener('click', changeLayout);
 }
 
-const RenderSelectedRover = state => {
+const changeLayout = e => {
+    e.preventDefault();
+    updateStore({selectedRoverInfosLayout: store.selectedRoverInfosLayout === 'list' ? 'table': 'list'});
+};
+
+//HOC which can be used to render data differently
+const RenderSelectedRover = (state, roverInformationsRenderFunction) => {
     if (!state.selectedRoverData) {
         getRoverDataFromAPI(state);
         return `<p>Loading selected rover data</p>`;
     }
     else {
-        const currentRover = state.selectedRoverData.get(0).rover;
         return `
             <div class="selected-rover">
                 <h3>Selected rover data</h3>
-                <div class="selected-rover__infos">
-                    <p>Name: ${currentRover.name}</p>
-                    <p>Launch Date: ${currentRover.launch_date}</p>
-                    <p>Landing Date: ${currentRover.landing_date}</p>
-                    <p>Status: ${currentRover.status}</p>
-                    <p>Photos taken on: ${state.selectedRoverData.get(0).earth_date}</p>
-                </div>
+                ${roverInformationsRenderFunction(state.selectedRoverData.get(0), renderRoverInfosAsList)}
                 <div class="selected-rover__images">
                     ${arrayToHTML(state.selectedRoverData, data => {
                         return `
@@ -88,7 +90,7 @@ const selectRover = event => {
     }
 }
 
-const RenderRovers = state => {
+const RenderRovers = (state) => {
     return arrayToHTML(state.rovers, rover => {
         return `
             <div class="rover" data-rover-id="${rover.toLowerCase()}">
@@ -99,8 +101,46 @@ const RenderRovers = state => {
     });
 }
 
+// HOC to map data to HTML
 const arrayToHTML = (array, mapCallback) => {
     return array.map(item => mapCallback(item)).join(' ');
+}
+
+const renderRoverInfosAsList = (firstPhoto) => {
+    return `
+        <ul class="selected-rover__infos">
+            <li>Name: ${firstPhoto.rover.name}</li>
+            <li>Launch Date: ${firstPhoto.rover.launch_date}</li>
+            <li>Landing Date: ${firstPhoto.rover.landing_date}</li>
+            <li>Status: ${firstPhoto.rover.status}</li>
+            <li>Last photos date: ${firstPhoto.earth_date}</li>
+        </ul>
+    `;
+}
+
+const renderRoverInfosAsTable = (firstPhoto) => {
+    return `
+        <table>
+            <tbody>
+                <tr>
+                    <td>${firstPhoto.rover.name}</td>
+                    <td>${firstPhoto.rover.launch_date}</td>
+                    <td>${firstPhoto.rover.landing_date}</td>
+                    <td>${firstPhoto.rover.status}</td>
+                    <td>${firstPhoto.earth_date}</td>
+                </tr>
+            </tbody>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Launch Date</th>
+                    <th>Landing Date</th>
+                    <th>Status</th>
+                    <th>Last photos date</th>
+                </tr>
+            </thead>
+        </table>
+    `;
 }
 
 const getRoverDataFromAPI = (state) => {

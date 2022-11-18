@@ -25,66 +25,76 @@
     height: auto;
 }
 
+a:visited {
+  color: blue;
+}
+
+table {
+  border-collapse: collapse;
+  border: 1px solid;
+  margin-bottom: 20px;
+}
+
 body {
-    display: flex;
-    flex-direction: column;
-    font-family: Arial;
-    min-height: 100vh;
-    background: url('./bg.jpeg');
-    color: white;
-    padding: 20px;
-  }
-  
-  header {
-    /* header styles */
-  }
-  
-  main {
-    flex: 1;
-    padding: 20px;
-  }
+  display: flex;
+  flex-direction: column;
+  font-family: Arial;
+  min-height: 100vh;
+  background: url('./bg.jpeg');
+  color: white;
+  padding: 20px;
+}
+
+header {
+  /* header styles */
+}
+
+main {
+  flex: 1;
+  padding: 20px;
+}
 
 
-  footer {
-    /* footer styles */
+footer {
+  /* footer styles */
+}
+
+/* -------------------  TABLET  --------------------- */
+@media (min-width: 768px) {
+  .rovers, .selected-rover__images {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+  }
+
+  .selected-rover__images {
+      flex-wrap: wrap;
   }
   
-  /* -------------------  TABLET  --------------------- */
-  @media (min-width: 768px) {
-    .rovers, .selected-rover__images {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-    }
-
-    .selected-rover__images {
-        flex-wrap: wrap;
-    }
-    
-    .rover__image {
-        height: 300px;
-        width: 100%;
-    }
-
-    .selected-rover__image img {
-        height: 200px;
-        width: 100%;
-    }
-
-    .selected-rover__image {
-        width: 20%;
-    }
-
+  .rover__image {
+      height: 300px;
+      width: 100%;
   }
-  
-  /* -------------------  DESKTOP  -------------------- */
-  
-  @media (min-width: 1224px) {
 
+  .selected-rover__image img {
+      height: 200px;
+      width: 100%;
   }
-  
-  /* -------------------  LARGE SCREENS  -------------- */
-  
-  @media (min-width: 1824px) {
-    /* use mobile */
+
+  .selected-rover__image {
+      width: 20%;
   }
+
+}
+
+/* -------------------  DESKTOP  -------------------- */
+
+@media (min-width: 1224px) {
+
+}
+
+/* -------------------  LARGE SCREENS  -------------- */
+
+@media (min-width: 1824px) {
+  /* use mobile */
+}
