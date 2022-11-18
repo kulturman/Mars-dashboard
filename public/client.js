@@ -1,7 +1,7 @@
 let store = {
     selectedRoverData: null,
     selectedRover: null,
-    rovers: ['Curiosity', 'Opportunity', 'Spirit'],
+    rovers: Immutable.List(['Curiosity', 'Opportunity', 'Spirit']),
 }
 
 // add our markup to the page
@@ -20,8 +20,6 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
-    let { rovers, apod } = state
-
     return `
         <header>
             <h1 class="main-title">Mars dashboard</h1>
@@ -33,7 +31,7 @@ const App = (state) => {
                     ${RenderRovers(store)}
                 </div>
                 <div class="selected-rover">
-                    ${RenderSelectedRover(store)}
+                   ${store.selectedRover ? RenderSelectedRover(store): ''}
                 </div>
             </section>
         </main>
@@ -51,11 +49,33 @@ const attachEvents = () => {
 }
 
 const RenderSelectedRover = state => {
-    if (state.selectedRover && !state.selectedRoverData) {
+    if (!state.selectedRoverData) {
         getRoverDataFromAPI(state);
+        return `<p>Loading selected rover data</p>`;
     }
-
-    return '';
+    else {
+        const currentRover = state.selectedRoverData.get(0).rover;
+        return `
+            <div class="selected-rover">
+                <h3>Selected rover data</h3>
+                <div class="selected-rover__infos">
+                    <p>Name: ${currentRover.name}</p>
+                    <p>Launch Date: ${currentRover.launch_date}</p>
+                    <p>Landing Date: ${currentRover.landing_date}</p>
+                    <p>Status: ${currentRover.status}</p>
+                </div>
+                <div class="selected-rover__images">
+                    ${arrayToHTML(state.selectedRoverData, data => {
+                        return `
+                            <div class="selected-rover__image">
+                                <img src="${data.img_src}" alt="">
+                            </div>
+                        `
+                    })}
+                </div>
+            </div>
+        `
+    }
 }
 
 const selectRover = event => {
@@ -68,48 +88,25 @@ const selectRover = event => {
 }
 
 const RenderRovers = state => {
-    return state.rovers.map(rover => {
+    return arrayToHTML(state.rovers, rover => {
         return `
             <div class="rover" data-rover-id="${rover.toLowerCase()}">
                 <img class="rover__image" src="./${rover.toLowerCase()}.jpeg" alt="">
                 <h3 class="rover__name">${rover}</h3>
             </div>
-        `
-    }).join('');
+        `;
+    });
 }
 
-
-// Example of a pure function that renders infomation requested from the backend
-const ImageOfTheDay = (apod) => {
-
-    // If image does not already exist, or it is not from today -- request it again
-    const today = new Date()
-    const photodate = new Date(apod.date)
-    console.log(photodate.getDate(), today.getDate());
-
-    console.log(photodate.getDate() === today.getDate());
-    if (!apod || apod.date === today.getDate() ) {
-        getImageOfTheDay(store)
-    }
-
-    // check if the photo of the day is actually type video!
-    if (apod.media_type === "video") {
-        return (`
-            <p>See today's featured video <a href="${apod.url}">here</a></p>
-            <p>${apod.title}</p>
-            <p>${apod.explanation}</p>
-        `)
-    } else {
-        return (`
-            <img src="${apod.image.url}" height="350px" width="100%" />
-            <p>${apod.image.explanation}</p>
-        `)
-    }
+const arrayToHTML = (array, mapCallback) => {
+    return array.map(item => mapCallback(item)).join(' ');
 }
-
 
 const getRoverDataFromAPI = (state) => {
     fetch(`http://localhost:3000/${state.selectedRover}`)
         .then(res => res.json())
-        .then(({ data }) => updateStore({ selectedRoverData: data.latest_photos }))
+        .then(({ data }) => {
+            const roverData = data.latest_photos || data.photos;
+            updateStore({ selectedRoverData: Immutable.List(roverData) })
+        });
 }

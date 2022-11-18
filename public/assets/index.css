@@ -10,7 +10,7 @@
     background: rgb(87, 79, 79);
 }
 
-.rovers {
+.rovers, .selected-rover__images {
     display: flex;
     gap: 30px;
     flex-direction: column;
@@ -20,7 +20,7 @@
     text-align: center;
 }
 
-.rover__image {
+.rover__image, .selected-rover__image img {
     width: 100%;
     height: auto;
 }
@@ -43,21 +43,38 @@ body {
     flex: 1;
     padding: 20px;
   }
-  
+
+
   footer {
     /* footer styles */
   }
   
   /* -------------------  TABLET  --------------------- */
   @media (min-width: 768px) {
-    .rovers {
+    .rovers, .selected-rover__images {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
     }
+
+    .selected-rover__images {
+        flex-wrap: wrap;
+    }
+    
     .rover__image {
         height: 300px;
+        width: 100%;
     }
+
+    .selected-rover__image img {
+        height: 200px;
+        width: 100%;
+    }
+
+    .selected-rover__image {
+        width: 20%;
+    }
+
   }
   
   /* -------------------  DESKTOP  -------------------- */
