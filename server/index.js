@@ -12,8 +12,7 @@ app.use('/', express.static(path.join(__dirname, '../public')))
 
 app.get('/:rover', async (req, res) => {
     /*
-        NASA API is pretty strange, there are not photos for every date and when we ask for latest photos data is inconsistent and we get strange photos,
-        so I have identified dates for each rover where there are data
+        NASA API is pretty strange, and we don't get latest photos for completed missions, so I only query last_photos for curiosity which is still active
     */
     const roverDates = {
         'opportunity': '2018-06-04',

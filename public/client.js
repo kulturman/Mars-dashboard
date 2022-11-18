@@ -63,6 +63,7 @@ const RenderSelectedRover = state => {
                     <p>Launch Date: ${currentRover.launch_date}</p>
                     <p>Landing Date: ${currentRover.landing_date}</p>
                     <p>Status: ${currentRover.status}</p>
+                    <p>Photos taken on: ${state.selectedRoverData.get(0).earth_date}</p>
                 </div>
                 <div class="selected-rover__images">
                     ${arrayToHTML(state.selectedRoverData, data => {
